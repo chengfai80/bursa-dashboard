@@ -1,539 +1,514 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🇲🇾 Bursa Malaysia Investment Dashboard</title>
+  <title>🇲🇾 Bursa Dashboard — CF's Investment Command Centre</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0f1117;
-      color: #e2e8f0;
-      min-height: 100vh;
-      padding: 24px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #2d3748;
-    }
-    .header h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
-    .header h1 span { color: #f6c90e; }
-    .meta { font-size: 0.75rem; color: #718096; text-align: right; line-height: 1.6; }
-    .live-badge {
-      display: inline-block;
-      background: #1c4532;
-      color: #68d391;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 99px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .disclaimer {
-      background: #1a202c;
-      border: 1px solid #2d3748;
-      border-left: 3px solid #f6c90e;
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 0.75rem;
-      color: #a0aec0;
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
-    .section-title {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #718096;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #2d3748;
-    }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 28px; }
-    .stat-card {
-      background: #1a202c;
-      border: 1px solid #2d3748;
-      border-radius: 10px;
-      padding: 16px 20px;
-    }
-    .stat-card .label { font-size: 0.72rem; color: #718096; margin-bottom: 6px; }
-    .stat-card .value { font-size: 1.5rem; font-weight: 700; color: #fff; }
-    .stat-card .sub { font-size: 0.72rem; color: #718096; margin-top: 4px; }
-    .up { color: #48bb78 !important; }
-    .down { color: #fc8181 !important; }
-    .neutral { color: #f6c90e !important; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0e1a;color:#e2e8f0;min-height:100vh;padding:20px}
+    a{color:#63b3ed;text-decoration:none}
+    a:hover{text-decoration:underline}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-      margin-bottom: 28px;
+    /* HEADER */
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #1e2a3a}
+    .header h1{font-size:1.4rem;font-weight:800;color:#fff;line-height:1.3}
+    .header h1 span{color:#f6c90e}
+    .meta{font-size:0.7rem;color:#718096;text-align:right;line-height:1.8}
+    .live{display:inline-block;background:#0d3321;color:#48bb78;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:99px;letter-spacing:.08em;text-transform:uppercase;border:1px solid #276749}
+
+    /* DISCLAIMER */
+    .disclaimer{background:#13182a;border:1px solid #1e2a3a;border-left:3px solid #f6c90e;border-radius:8px;padding:10px 14px;font-size:0.72rem;color:#a0aec0;margin-bottom:24px;line-height:1.6}
+
+    /* TODAY'S PICKS HERO */
+    .hero{background:linear-gradient(135deg,#0d1f3c,#0a1628);border:1px solid #1e3a5f;border-radius:12px;padding:20px 24px;margin-bottom:24px}
+    .hero-title{font-size:0.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#63b3ed;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .hero-title::after{content:'';flex:1;height:1px;background:#1e3a5f}
+    .picks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .pick-card{background:#0f1e35;border:1px solid #1e3a5f;border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+    .pick-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .pick-card.strong-buy::before{background:linear-gradient(90deg,#276749,#48bb78)}
+    .pick-card.buy::before{background:linear-gradient(90deg,#1a365d,#63b3ed)}
+    .pick-card.hold::before{background:linear-gradient(90deg,#744210,#f6c90e)}
+    .pick-ticker{font-size:1rem;font-weight:800;color:#fff;font-family:monospace}
+    .pick-name{font-size:0.7rem;color:#718096;margin-bottom:10px}
+    .pick-action{display:inline-block;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+    .action-strong-buy{background:#0d3321;color:#48bb78;border:1px solid #276749}
+    .action-buy{background:#1a365d;color:#90cdf4;border:1px solid #2c5282}
+    .action-hold{background:#3d2f00;color:#f6c90e;border:1px solid #744210}
+    .price-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .price-label{font-size:0.65rem;color:#718096}
+    .price-val{font-size:0.85rem;font-weight:700}
+    .upside-bar{height:4px;background:#1e2a3a;border-radius:99px;overflow:hidden;margin:8px 0}
+    .upside-fill{height:100%;border-radius:99px}
+    .fill-green{background:linear-gradient(90deg,#276749,#48bb78)}
+    .fill-blue{background:linear-gradient(90deg,#1a365d,#63b3ed)}
+    .fill-yellow{background:linear-gradient(90deg,#744210,#f6c90e)}
+    .upside-pct{font-size:0.72rem;font-weight:700;color:#48bb78}
+    .why{font-size:0.7rem;color:#a0aec0;line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px solid #1e2a3a}
+
+    /* SECTION */
+    .section-title{font-size:0.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#718096;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .section-title::after{content:'';flex:1;height:1px;background:#1e2a3a}
+
+    /* MARKET BAR */
+    .market-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
+    .mstat{background:#13182a;border:1px solid #1e2a3a;border-radius:8px;padding:12px 14px}
+    .mstat .lbl{font-size:0.65rem;color:#718096;margin-bottom:4px}
+    .mstat .val{font-size:1.1rem;font-weight:800;color:#fff}
+    .mstat .sub{font-size:0.65rem;color:#718096;margin-top:2px}
+    .up{color:#48bb78!important}
+    .down{color:#fc8181!important}
+    .neutral{color:#f6c90e!important}
+
+    /* TABLES */
+    table{width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:24px}
+    th{background:#13182a;color:#718096;font-size:0.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid #1e2a3a;white-space:nowrap}
+    td{padding:10px 12px;border-bottom:1px solid #13182a;vertical-align:middle}
+    tr:hover td{background:#13182a}
+    .ticker{font-weight:700;font-family:monospace;font-size:0.82rem;color:#fff}
+    .badge{display:inline-block;padding:2px 7px;border-radius:99px;font-size:0.62rem;font-weight:600;letter-spacing:.04em}
+    .badge-blue{background:#1a365d;color:#63b3ed}
+    .badge-green{background:#1c4532;color:#68d391}
+    .badge-yellow{background:#3d2f00;color:#f6c90e}
+    .badge-purple{background:#2d1b69;color:#b794f4}
+    .badge-red{background:#4a1818;color:#fc8181}
+    .badge-teal{background:#1d4044;color:#81e6d9}
+    .ybar{display:flex;align-items:center;gap:6px}
+    .ybar .bw{flex:1;height:4px;background:#1e2a3a;border-radius:99px;overflow:hidden}
+    .ybar .bf{height:100%;border-radius:99px;background:linear-gradient(90deg,#276749,#68d391)}
+    .rating-buy{color:#48bb78;font-weight:700}
+    .rating-strong{color:#68d391;font-weight:700}
+    .rating-hold{color:#f6c90e;font-weight:700}
+    .rating-sell{color:#fc8181;font-weight:700}
+    .tp-up{color:#48bb78;font-weight:700}
+    .tp-down{color:#fc8181}
+
+    /* SECTOR CARDS */
+    .sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+    .sector-card{background:#13182a;border:1px solid #1e2a3a;border-radius:10px;padding:14px 16px}
+    .sector-card h4{font-size:0.8rem;font-weight:700;color:#fff;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+    .sector-card .outlook{font-size:0.65rem;font-weight:700;padding:1px 6px;border-radius:99px}
+    .ow{background:#0d3321;color:#48bb78}
+    .n{background:#3d2f00;color:#f6c90e}
+    .uw{background:#4a1818;color:#fc8181}
+    .sector-card p{font-size:0.72rem;color:#a0aec0;line-height:1.55;margin-top:8px}
+    .sector-card .picks{margin-top:8px;font-size:0.7rem;color:#718096}
+    .sector-card .picks strong{color:#63b3ed}
+
+    /* NEWS */
+    .news-card{background:#13182a;border:1px solid #1e2a3a;border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+    .news-dot{width:6px;height:6px;border-radius:50%;background:#63b3ed;margin-top:5px;flex-shrink:0}
+    .news-title{font-size:0.8rem;font-weight:600;color:#e2e8f0;margin-bottom:2px}
+    .news-meta{font-size:0.68rem;color:#718096}
+
+    /* TIPS */
+    .tips{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+    .tip{background:#13182a;border:1px solid #1e2a3a;border-radius:10px;padding:14px 16px}
+    .tip h4{font-size:0.78rem;font-weight:700;color:#fff;margin-bottom:6px}
+    .tip p{font-size:0.72rem;color:#a0aec0;line-height:1.55}
+
+    .footer{text-align:center;font-size:0.67rem;color:#4a5568;padding-top:16px;border-top:1px solid #13182a;line-height:1.8}
+
+    @media(max-width:900px){
+      .picks-grid{grid-template-columns:repeat(2,1fr)}
+      .market-bar{grid-template-columns:repeat(3,1fr)}
+      .sectors{grid-template-columns:repeat(2,1fr)}
     }
-    th {
-      background: #1a202c;
-      color: #718096;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid #2d3748;
-    }
-    td {
-      padding: 11px 14px;
-      border-bottom: 1px solid #1a202c;
-      vertical-align: middle;
-    }
-    tr:hover td { background: #1a202c; }
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 99px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .badge-green { background: #1c4532; color: #68d391; }
-    .badge-blue { background: #1a365d; color: #63b3ed; }
-    .badge-yellow { background: #3d2f00; color: #f6c90e; }
-    .badge-red { background: #4a1818; color: #fc8181; }
-    .badge-purple { background: #2d1b69; color: #b794f4; }
-    .ticker { font-weight: 700; font-family: monospace; font-size: 0.85rem; color: #fff; }
-    .company { color: #a0aec0; font-size: 0.78rem; }
-    .yield-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .yield-bar .bar-wrap {
-      flex: 1;
-      height: 5px;
-      background: #2d3748;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .yield-bar .bar-fill {
-      height: 100%;
-      border-radius: 99px;
-      background: linear-gradient(90deg, #48bb78, #68d391);
-    }
-    .risk-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 5px;
-    }
-    .risk-low { background: #48bb78; }
-    .risk-med { background: #f6c90e; }
-    .risk-high { background: #fc8181; }
-    .news-card {
-      background: #1a202c;
-      border: 1px solid #2d3748;
-      border-radius: 10px;
-      padding: 14px 18px;
-      margin-bottom: 10px;
-    }
-    .news-card .news-title { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
-    .news-card .news-meta { font-size: 0.7rem; color: #718096; }
-    .news-card a { color: #63b3ed; text-decoration: none; }
-    .news-card a:hover { text-decoration: underline; }
-    .tips-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 28px; }
-    .tip-card {
-      background: #1a202c;
-      border: 1px solid #2d3748;
-      border-radius: 10px;
-      padding: 16px 18px;
-    }
-    .tip-card h4 { font-size: 0.8rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .tip-card p { font-size: 0.75rem; color: #a0aec0; line-height: 1.6; }
-    .source-tag { font-size: 0.65rem; color: #4a5568; font-style: italic; }
-    .footer {
-      text-align: center;
-      font-size: 0.7rem;
-      color: #4a5568;
-      padding-top: 20px;
-      border-top: 1px solid #1a202c;
-    }
-    @media (max-width: 768px) {
-      .grid-3 { grid-template-columns: 1fr 1fr; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .tips-grid { grid-template-columns: 1fr; }
+    @media(max-width:600px){
+      .picks-grid{grid-template-columns:1fr}
+      .market-bar{grid-template-columns:repeat(2,1fr)}
+      .sectors{grid-template-columns:1fr}
+      .tips{grid-template-columns:1fr}
+      body{padding:12px}
     }
   </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🇲🇾 Bursa Malaysia <span>Investment Dashboard</span></h1>
+  <div>
+    <h1>🇲🇾 CF's Bursa <span>Investment Command Centre</span></h1>
+    <div style="font-size:0.72rem;color:#718096;margin-top:4px">Decision-ready research · Updated daily at 8AM MYT</div>
+  </div>
   <div class="meta">
-    Generated by Angel 🪽 &nbsp;<span class="live-badge">● Live Data</span><br/>
-    15 March 2026 · 10:12 AM MYT<br/>
-    Sources: TradingView, Duitwise, The Edge, Malay Mail
+    Angel 🪽 &nbsp;<span class="live">● Live</span><br/>
+    15 March 2026 · 11:50 AM MYT<br/>
+    Sources: The Edge, i3investor, TradingView, CGS, Maybank IB
   </div>
 </div>
 
 <div class="disclaimer">
-  ⚠️ <strong>Disclaimer:</strong> This dashboard is for informational purposes only and does not constitute financial advice. Dividend yields sourced from TradingView live screener (15 Mar 2026). Always verify with a licensed broker or the Securities Commission Malaysia before investing. Past performance does not guarantee future results.
+  ⚠️ <strong>For information only — not financial advice.</strong> Target prices are analyst consensus from The Edge Malaysia, i3investor & TradingView (as of Mar 2026). Always do your own research and consult a licensed advisor before investing. You can lose money in stocks.
 </div>
 
-<!-- Market Overview -->
-<div class="section-title">📊 Market Overview — 15 Mar 2026</div>
-<div class="grid-3">
-  <div class="stat-card">
-    <div class="label">FTSE Bursa Malaysia KLCI</div>
-    <div class="value down">1,699</div>
-    <div class="sub">−0.71% on 13 Mar · down 2.44% past month</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">Market Breadth (13 Mar)</div>
-    <div class="value down">Negative</div>
-    <div class="sub">215 decliners vs 109 gainers</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">YoY Performance</div>
-    <div class="value up">+12.35%</div>
-    <div class="sub">Strong 1-year gain despite recent dip</div>
-  </div>
-</div>
-<div class="grid-3">
-  <div class="stat-card">
-    <div class="label">Market Headwinds</div>
-    <div class="value neutral">Caution</div>
-    <div class="sub">Wall St selloff + Hormuz tensions</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">FD Rate (Approx.)</div>
-    <div class="value">~2.5%</div>
-    <div class="sub">Dividend stocks offer 5–7% — far better</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">M-REIT Projected Yield</div>
-    <div class="value up">6.1%</div>
-    <div class="sub">Maybank IB forecast for 2026 avg</div>
+<!-- TODAY'S PICKS -->
+<div class="hero">
+  <div class="hero-title">🎯 Today's Top Picks — What to Consider Buying Now</div>
+  <div class="picks-grid">
+
+    <div class="pick-card strong-buy">
+      <div class="pick-ticker">GAMUDA</div>
+      <div class="pick-name">Gamuda Bhd · Construction/Infra</div>
+      <span class="pick-action action-strong-buy">⭐ Strong Buy</span>
+      <div class="price-row"><span class="price-label">Current Price</span><span class="price-val">RM 4.20</span></div>
+      <div class="price-row"><span class="price-label">Analyst Avg Target</span><span class="price-val tp-up">RM 5.89–6.46</span></div>
+      <div class="price-row"><span class="price-label">Buy Below</span><span class="price-val neutral">RM 4.50</span></div>
+      <div class="price-row"><span class="price-label">Take Profit</span><span class="price-val up">RM 5.50–5.90</span></div>
+      <div class="upside-bar"><div class="upside-fill fill-green" style="width:85%"></div></div>
+      <div class="upside-pct">↑ 40% upside · 101 analysts rated BUY · 0 SELL</div>
+      <div class="why">🏗️ Top analyst pick for 2026. MRT3, data centre construction, Australian expansion all in play. The Edge avg TP RM6.46 (+30–40% from current). Biggest upside among large-caps on Bursa right now.</div>
+    </div>
+
+    <div class="pick-card strong-buy">
+      <div class="pick-ticker">CIMB</div>
+      <div class="pick-name">CIMB Group Holdings · Banking</div>
+      <span class="pick-action action-strong-buy">⭐ Strong Buy</span>
+      <div class="price-row"><span class="price-label">Current Price</span><span class="price-val">RM 8.00</span></div>
+      <div class="price-row"><span class="price-label">Analyst Avg Target</span><span class="price-val tp-up">RM 9.00–9.50</span></div>
+      <div class="price-row"><span class="price-label">Buy Below</span><span class="price-val neutral">RM 8.20</span></div>
+      <div class="price-row"><span class="price-label">Take Profit</span><span class="price-val up">RM 9.00+</span></div>
+      <div class="upside-bar"><div class="upside-fill fill-green" style="width:70%"></div></div>
+      <div class="upside-pct">↑ ~15–19% upside + 5.89% dividend yield</div>
+      <div class="why">🏦 KLCI earnings growth leader for 2026 per CIMB Securities. SE Asia regional exposure, 5.89% live yield, P/E 10.98x (cheap). NIM recovery expected as rates stabilise.</div>
+    </div>
+
+    <div class="pick-card strong-buy">
+      <div class="pick-ticker">TENAGA</div>
+      <div class="pick-name">Tenaga Nasional Bhd · Utilities</div>
+      <span class="pick-action action-strong-buy">⭐ Strong Buy</span>
+      <div class="price-row"><span class="price-label">Current Price</span><span class="price-val">~RM 14.00</span></div>
+      <div class="price-row"><span class="price-label">Analyst Target</span><span class="price-val tp-up">RM 15.77</span></div>
+      <div class="price-row"><span class="price-label">Buy Below</span><span class="price-val neutral">RM 14.50</span></div>
+      <div class="price-row"><span class="price-label">Take Profit</span><span class="price-val up">RM 15.50+</span></div>
+      <div class="upside-bar"><div class="upside-fill fill-green" style="width:55%"></div></div>
+      <div class="upside-pct">↑ ~12% upside + 4.5% dividend yield</div>
+      <div class="why">⚡ Utilities sector expected to rebound 9%+ after 2025 correction. Data centre power demand boom. Monopoly utility with regulated returns. PublicInvest: "multi-year investment upcycle" in power sector.</div>
+    </div>
+
+    <div class="pick-card buy">
+      <div class="pick-ticker">INARI</div>
+      <div class="pick-name">Inari Amertron Bhd · Semiconductor</div>
+      <span class="pick-action action-buy">🔵 Buy</span>
+      <div class="price-row"><span class="price-label">Current Price</span><span class="price-val">~RM 1.60</span></div>
+      <div class="price-row"><span class="price-label">Analyst Avg Target</span><span class="price-val tp-up">RM 2.14</span></div>
+      <div class="price-row"><span class="price-label">Buy Below</span><span class="price-val neutral">RM 1.80</span></div>
+      <div class="price-row"><span class="price-label">Take Profit</span><span class="price-val up">RM 2.00–2.40</span></div>
+      <div class="upside-bar"><div class="upside-fill fill-blue" style="width:65%"></div></div>
+      <div class="upside-pct">↑ ~34% avg target · 20 analysts · Max TP RM2.90</div>
+      <div class="why">📡 Malaysia's top semiconductor play. RF components for AI servers & iPhones. Global semiconductor market growing 25%+ in 2026 (Kenanga). AI upcycle "extends into mid-2026 or beyond". The Edge top pick for tech sector.</div>
+    </div>
+
+    <div class="pick-card buy">
+      <div class="pick-ticker">MAYBANK</div>
+      <div class="pick-name">Malayan Banking Bhd · Banking</div>
+      <span class="pick-action action-buy">🔵 Buy</span>
+      <div class="price-row"><span class="price-label">Current Price</span><span class="price-val">RM 11.32</span></div>
+      <div class="price-row"><span class="price-label">Analyst Avg Target</span><span class="price-val tp-up">RM 11.44–13.00</span></div>
+      <div class="price-row"><span class="price-label">Buy Below</span><span class="price-val neutral">RM 11.50</span></div>
+      <div class="price-row"><span class="price-label">Take Profit</span><span class="price-val up">RM 12.50+</span></div>
+      <div class="upside-bar"><div class="upside-fill fill-blue" style="width:45%"></div></div>
+      <div class="upside-pct">↑ Modest cap gain + 6.2% dividend yield · 35 BUY</div>
+      <div class="why">🏦 Malaysia's biggest, most stable bank. 35 analysts BUY, 5 HOLD, 0 SELL. Mainly a dividend play at ~6.2%/year. i3investor fair value RM12.80–15.00 range. Best for income-focused investors.</div>
+    </div>
+
+    <div class="pick-card buy">
+      <div class="pick-ticker">SENTRAL REIT</div>
+      <div class="pick-name">Sentral REIT · Office REIT</div>
+      <span class="pick-action action-buy">🔵 Buy</span>
+      <div class="price-row"><span class="price-label">Dividend Yield</span><span class="price-val up">7.78%</span></div>
+      <div class="price-row"><span class="price-label">Distribution</span><span class="price-val">Quarterly</span></div>
+      <div class="price-row"><span class="price-label">Buy Strategy</span><span class="price-val neutral">Accumulate on dips</span></div>
+      <div class="price-row"><span class="price-label">Stop Loss</span><span class="price-val down">−10% from entry</span></div>
+      <div class="upside-bar"><div class="upside-fill fill-blue" style="width:78%"></div></div>
+      <div class="upside-pct">↑ 7.78% yield — highest REIT on Bursa · Maybank IB avg 6.1% for M-REITs</div>
+      <div class="why">🏢 Highest-yielding REIT on Bursa. Stable government & MNC office tenants. M-REITs projected 208–258 bps spread over risk-free rate. Quarterly income — great for passive cashflow.</div>
+    </div>
+
   </div>
 </div>
 
-<!-- Top Dividend Stocks (Live) -->
-<div class="section-title">💰 Top Dividend Stocks — Live Yields (TradingView, 15 Mar 2026)</div>
+<!-- MARKET OVERVIEW -->
+<div class="section-title">📊 Market Snapshot — 15 Mar 2026</div>
+<div class="market-bar">
+  <div class="mstat">
+    <div class="lbl">KLCI Index</div>
+    <div class="val down">1,699</div>
+    <div class="sub">−0.71% on 13 Mar</div>
+  </div>
+  <div class="mstat">
+    <div class="lbl">1-Year Performance</div>
+    <div class="val up">+12.35%</div>
+    <div class="sub">Strong YoY despite dip</div>
+  </div>
+  <div class="mstat">
+    <div class="lbl">KLCI 2026 Target</div>
+    <div class="val neutral">1,810–1,850</div>
+    <div class="sub">CGS: 1,810 · Maybank bull: 1,850</div>
+  </div>
+  <div class="mstat">
+    <div class="lbl">Earnings Growth 2026</div>
+    <div class="val up">+8.5%</div>
+    <div class="sub">Led by banks, telcos, utilities</div>
+  </div>
+  <div class="mstat">
+    <div class="lbl">FD Rate vs Div Stocks</div>
+    <div class="val up">2.5% → 6%+</div>
+    <div class="sub">Dividend stocks win easily</div>
+  </div>
+</div>
+
+<!-- SECTOR OUTLOOK -->
+<div class="section-title">🏭 2026 Sector Outlook (The Edge / CGS / Kenanga Research)</div>
+<div class="sectors">
+  <div class="sector-card">
+    <h4>💻 Tech / Semiconductors <span class="outlook ow">Overweight</span></h4>
+    <p>Global semiconductor market growing >25% in 2026 toward US$1 trillion. AI server demand = structural upcycle extending into mid-2026+. Selective — AI-linked players win, mature-node slower.</p>
+    <div class="picks">Top picks: <strong>INARI</strong>, <strong>UNISEM</strong></div>
+  </div>
+  <div class="sector-card">
+    <h4>⚡ Utilities / Power <span class="outlook ow">Overweight</span></h4>
+    <p>Sector corrected 9%+ in 2025 — strong rebound expected. Data centre power demand boom. New gas power plants, large-scale solar projects entering construction phase in 2026.</p>
+    <div class="picks">Top picks: <strong>TENAGA</strong> (TP RM15.77), <strong>YTLPOWR</strong> (TP RM4.38), <strong>MALAKOF</strong></div>
+  </div>
+  <div class="sector-card">
+    <h4>🏗️ Construction / Infra <span class="outlook ow">Overweight</span></h4>
+    <p>13th Malaysia Plan execution year. MRT3, data centre construction, Johor-SG SEZ all driving order books. CGS highlights industrial properties & construction as key beneficiary.</p>
+    <div class="picks">Top picks: <strong>GAMUDA</strong> (TP RM5.89–6.46), <strong>MUHIBBAH</strong></div>
+  </div>
+  <div class="sector-card">
+    <h4>🏦 Banking / Finance <span class="outlook ow">Overweight</span></h4>
+    <p>NIM recovery expected as rate spread between US Fed & BNM narrows — supports ringgit & local stocks. GEAR-uP reform programme adding upside. Earnings growth 6.4%+ projected.</p>
+    <div class="picks">Top picks: <strong>CIMB</strong>, <strong>MAYBANK</strong>, <strong>PBBANK</strong>, <strong>BIMB</strong></div>
+  </div>
+  <div class="sector-card">
+    <h4>🛢️ Oil &amp; Gas <span class="outlook n">Neutral</span></h4>
+    <p>Crude ~US$61/barrel caps enthusiasm. PETRONAS/Petros friction clouds domestic capex. OSV market healthy due to ageing fleet. Avoid maintenance players; prefer shipping & storage.</p>
+    <div class="picks">Top picks: <strong>MISC</strong> (TP RM8.51), <strong>DIALOG</strong> (TP RM2.28), <strong>YINSON</strong></div>
+  </div>
+  <div class="sector-card">
+    <h4>🌴 Plantation <span class="outlook ow">Overweight</span></h4>
+    <p>CPO prices firm ~RM4,000/tonne. Indonesia crackdown on illegal plantations reducing global supply. Upstream players benefit most. Indonesia B50 biodiesel delay is a minor headwind.</p>
+    <div class="picks">Top picks: Upstream-focused plantation names, <strong>SARAWAK PLANTATION</strong></div>
+  </div>
+</div>
+
+<!-- FULL DIVIDEND TABLE -->
+<div class="section-title">💰 Dividend Stocks — Live Yields (TradingView, 15 Mar 2026)</div>
 <table>
   <thead>
     <tr>
       <th>Ticker</th>
       <th>Company</th>
       <th>Sector</th>
-      <th>Live Div. Yield</th>
-      <th>Price (MYR)</th>
+      <th>Live Yield</th>
+      <th>Price</th>
       <th>P/E</th>
-      <th>Risk</th>
-      <th>Analyst</th>
+      <th>Analyst Rating</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><span class="ticker">MAYBANK</span></td>
-      <td>Malayan Banking Bhd</td>
-      <td><span class="badge badge-blue">Banking</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">~6.2%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:80%"></div></div>
-        </div>
-      </td>
-      <td>—</td>
-      <td>—</td>
-      <td><span class="risk-dot risk-low"></span>Low</td>
-      <td><span class="badge badge-green">Strong Buy</span></td>
-    </tr>
-    <tr>
-      <td><span class="ticker">CIMB</span></td>
-      <td>CIMB Group Holdings Bhd</td>
-      <td><span class="badge badge-blue">Banking</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">5.89%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:74%"></div></div>
-        </div>
-      </td>
-      <td>8.00</td>
-      <td>10.98</td>
-      <td><span class="risk-dot risk-low"></span>Low</td>
-      <td><span class="badge badge-green">Strong Buy</span></td>
-    </tr>
-    <tr>
-      <td><span class="ticker">RHBBANK</span></td>
-      <td>RHB Bank Bhd</td>
-      <td><span class="badge badge-blue">Banking</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">6.03%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:76%"></div></div>
-        </div>
-      </td>
-      <td>8.29</td>
-      <td>10.78</td>
-      <td><span class="risk-dot risk-low"></span>Low-Med</td>
-      <td><span class="badge badge-blue">Buy</span></td>
-    </tr>
-    <tr>
-      <td><span class="ticker">BIMB</span></td>
-      <td>Bank Islam Malaysia Bhd</td>
-      <td><span class="badge badge-blue">Islamic Bank</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">6.15%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:77%"></div></div>
-        </div>
-      </td>
-      <td>2.35</td>
-      <td>9.56</td>
-      <td><span class="risk-dot risk-low"></span>Low-Med</td>
-      <td><span class="badge badge-yellow">Neutral</span></td>
-    </tr>
-    <tr>
       <td><span class="ticker">ALLIANZ</span></td>
       <td>Allianz Malaysia Bhd</td>
       <td><span class="badge badge-purple">Insurance</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">8.72%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:100%"></div></div>
-        </div>
-      </td>
-      <td>21.40</td>
-      <td>8.63</td>
-      <td><span class="risk-dot risk-med"></span>Medium</td>
-      <td><span class="badge badge-green">Strong Buy</span></td>
+      <td><div class="ybar"><strong class="up">8.72%</strong><div class="bw"><div class="bf" style="width:100%"></div></div></div></td>
+      <td>RM 21.40</td>
+      <td>8.63x</td>
+      <td class="rating-strong">Strong Buy</td>
+      <td class="up">Consider ≤RM21.50</td>
     </tr>
     <tr>
       <td><span class="ticker">TIMECOM</span></td>
       <td>TIME dotCom Bhd</td>
-      <td><span class="badge badge-purple">Tech/Telco</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">8.12%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:95%"></div></div>
-        </div>
-      </td>
-      <td>6.00</td>
-      <td>25.91</td>
-      <td><span class="risk-dot risk-med"></span>Medium</td>
-      <td><span class="badge badge-blue">Buy</span></td>
-    </tr>
-    <tr>
-      <td><span class="ticker">HAPSENG</span></td>
-      <td>Hap Seng Consolidated Bhd</td>
-      <td><span class="badge badge-yellow">Conglomerate</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">7.19%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:87%"></div></div>
-        </div>
-      </td>
-      <td>2.78</td>
-      <td>13.83</td>
-      <td><span class="risk-dot risk-med"></span>Medium</td>
-      <td>—</td>
-    </tr>
-    <tr>
-      <td><span class="ticker">BAT</span></td>
-      <td>British American Tobacco Malaysia</td>
-      <td><span class="badge badge-yellow">Consumer</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">10.87%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:100%"></div></div>
-        </div>
-      </td>
-      <td>5.84</td>
-      <td>—</td>
-      <td><span class="risk-dot risk-high"></span>High</td>
-      <td><span class="badge badge-green">Strong Buy</span></td>
+      <td><span class="badge badge-blue">Tech/Telco</span></td>
+      <td><div class="ybar"><strong class="up">8.12%</strong><div class="bw"><div class="bf" style="width:94%"></div></div></div></td>
+      <td>RM 6.00</td>
+      <td>25.91x</td>
+      <td class="rating-buy">Buy</td>
+      <td class="up">Consider ≤RM6.20</td>
     </tr>
     <tr>
       <td><span class="ticker">MBMR</span></td>
       <td>MBM Resources Bhd</td>
       <td><span class="badge badge-yellow">Auto</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">7.77%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:92%"></div></div>
-        </div>
-      </td>
-      <td>5.02</td>
-      <td>5.79</td>
-      <td><span class="risk-dot risk-med"></span>Medium</td>
-      <td><span class="badge badge-blue">Buy</span></td>
+      <td><div class="ybar"><strong class="up">7.77%</strong><div class="bw"><div class="bf" style="width:89%"></div></div></div></td>
+      <td>RM 5.02</td>
+      <td>5.79x</td>
+      <td class="rating-buy">Buy</td>
+      <td class="up">Consider ≤RM5.20</td>
     </tr>
     <tr>
       <td><span class="ticker">DAYANG</span></td>
-      <td>Dayang Enterprise Holdings Bhd</td>
+      <td>Dayang Enterprise Holdings</td>
       <td><span class="badge badge-yellow">O&amp;G Services</span></td>
-      <td>
-        <div class="yield-bar">
-          <strong class="up">7.65%</strong>
-          <div class="bar-wrap"><div class="bar-fill" style="width:91%"></div></div>
-        </div>
-      </td>
-      <td>1.83</td>
-      <td>10.28</td>
-      <td><span class="risk-dot risk-med"></span>Medium</td>
-      <td><span class="badge badge-blue">Buy</span></td>
+      <td><div class="ybar"><strong class="up">7.65%</strong><div class="bw"><div class="bf" style="width:88%"></div></div></div></td>
+      <td>RM 1.83</td>
+      <td>10.28x</td>
+      <td class="rating-buy">Buy</td>
+      <td class="neutral">Watch — O&amp;G headwinds</td>
+    </tr>
+    <tr>
+      <td><span class="ticker">HAPSENG</span></td>
+      <td>Hap Seng Consolidated</td>
+      <td><span class="badge badge-yellow">Conglomerate</span></td>
+      <td><div class="ybar"><strong class="up">7.19%</strong><div class="bw"><div class="bf" style="width:82%"></div></div></div></td>
+      <td>RM 2.78</td>
+      <td>13.83x</td>
+      <td class="rating-hold">—</td>
+      <td class="neutral">Income play</td>
+    </tr>
+    <tr>
+      <td><span class="ticker">BIMB</span></td>
+      <td>Bank Islam Malaysia Bhd</td>
+      <td><span class="badge badge-blue">Islamic Bank</span></td>
+      <td><div class="ybar"><strong class="up">6.15%</strong><div class="bw"><div class="bf" style="width:71%"></div></div></div></td>
+      <td>RM 2.35</td>
+      <td>9.56x</td>
+      <td class="rating-hold">Neutral</td>
+      <td class="neutral">Shariah-compliant option</td>
+    </tr>
+    <tr>
+      <td><span class="ticker">RHBBANK</span></td>
+      <td>RHB Bank Bhd</td>
+      <td><span class="badge badge-blue">Banking</span></td>
+      <td><div class="ybar"><strong class="up">6.03%</strong><div class="bw"><div class="bf" style="width:69%"></div></div></div></td>
+      <td>RM 8.29</td>
+      <td>10.78x</td>
+      <td class="rating-buy">Buy</td>
+      <td class="up">Good entry</td>
+    </tr>
+    <tr>
+      <td><span class="ticker">CIMB</span></td>
+      <td>CIMB Group Holdings</td>
+      <td><span class="badge badge-blue">Banking</span></td>
+      <td><div class="ybar"><strong class="up">5.89%</strong><div class="bw"><div class="bf" style="width:68%"></div></div></div></td>
+      <td>RM 8.00</td>
+      <td>10.98x</td>
+      <td class="rating-strong">Strong Buy</td>
+      <td class="up">⭐ Top pick</td>
+    </tr>
+    <tr>
+      <td><span class="ticker">BAT</span></td>
+      <td>British American Tobacco Malaysia</td>
+      <td><span class="badge badge-red">Consumer</span></td>
+      <td><div class="ybar"><strong class="up">10.87%</strong><div class="bw"><div class="bf" style="width:100%"></div></div></div></td>
+      <td>RM 5.84</td>
+      <td>—</td>
+      <td class="rating-strong">Strong Buy</td>
+      <td class="neutral">High yield, sin stock risk</td>
     </tr>
   </tbody>
 </table>
 
-<!-- REITs Section -->
-<div class="section-title">🏢 M-REITs — Projected 6.1% Avg Yield in 2026 (Maybank IB)</div>
+<!-- REIT TABLE -->
+<div class="section-title">🏢 M-REITs — Avg Projected 6.1% Yield 2026 (Maybank IB Research)</div>
 <table>
   <thead>
     <tr>
-      <th>Ticker</th>
-      <th>REIT Name</th>
+      <th>REIT</th>
       <th>Focus</th>
-      <th>Est. Yield 2026</th>
-      <th>Distribution</th>
-      <th>Notes</th>
+      <th>Est. Yield</th>
+      <th>Dist. Freq</th>
+      <th>Strength</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><span class="ticker">SENTRAL</span></td>
-      <td>Sentral REIT</td>
       <td><span class="badge badge-blue">Office</span></td>
-      <td><strong class="up">7.78%</strong> ⭐</td>
+      <td><strong class="up">7.78% ⭐</strong></td>
       <td>Quarterly</td>
-      <td>Highest-yielding REIT on Bursa, stable office tenancy</td>
+      <td>Highest yield on Bursa, govt/MNC tenants</td>
+      <td class="up">Best REIT pick</td>
     </tr>
     <tr>
       <td><span class="ticker">AXREIT</span></td>
-      <td>Axis REIT</td>
-      <td><span class="badge badge-blue">Industrial</span></td>
+      <td><span class="badge badge-teal">Industrial</span></td>
       <td><strong class="up">~5.8%</strong></td>
       <td>Quarterly</td>
-      <td>Strong industrial/logistics assets, consistent payer</td>
-    </tr>
-    <tr>
-      <td><span class="ticker">PAVREIT</span></td>
-      <td>Pavilion REIT</td>
-      <td><span class="badge badge-green">Retail</span></td>
-      <td><strong class="up">~5.5%</strong></td>
-      <td>Semi-annual</td>
-      <td>Prime KL retail malls, tourist recovery tailwind</td>
+      <td>Logistics & industrial, consistent payer</td>
+      <td class="up">Buy on dips</td>
     </tr>
     <tr>
       <td><span class="ticker">IGBREIT</span></td>
-      <td>IGB REIT</td>
       <td><span class="badge badge-green">Retail</span></td>
       <td><strong class="up">~5.2%</strong></td>
       <td>Semi-annual</td>
-      <td>Mid Valley & The Gardens — top-performing malls</td>
+      <td>Mid Valley & Gardens — Malaysia's best malls</td>
+      <td class="neutral">Hold/Accumulate</td>
+    </tr>
+    <tr>
+      <td><span class="ticker">PAVREIT</span></td>
+      <td><span class="badge badge-green">Retail</span></td>
+      <td><strong class="up">~5.5%</strong></td>
+      <td>Semi-annual</td>
+      <td>Pavilion KL, tourist recovery upside</td>
+      <td class="neutral">Accumulate</td>
     </tr>
     <tr>
       <td><span class="ticker">KLCCSS</span></td>
-      <td>KLCC REIT</td>
       <td><span class="badge badge-blue">Office/Retail</span></td>
       <td><strong class="up">~4.8%</strong></td>
       <td>Semi-annual</td>
-      <td>Petronas Towers anchor tenant — ultra-stable</td>
+      <td>Petronas Towers anchor — ultra stable</td>
+      <td class="neutral">Defensive hold</td>
     </tr>
     <tr>
-      <td><span class="ticker">AMREIT</span></td>
-      <td>AME REIT</td>
-      <td><span class="badge badge-blue">Industrial</span></td>
+      <td><span class="ticker">AME REIT</span></td>
+      <td><span class="badge badge-teal">Industrial</span></td>
       <td><strong class="neutral">~4.5%</strong></td>
       <td>Quarterly</td>
-      <td>Johor industrial parks, benefiting from Johor-SG SEZ</td>
+      <td>Johor industrial parks, Johor-SG SEZ play</td>
+      <td class="up">Long-term buy</td>
     </tr>
   </tbody>
 </table>
 
-<!-- Market News -->
-<div class="section-title">📰 Latest Market News</div>
-<div class="news-card">
-  <div class="news-title">Bursa tracks Wall Street lower as Hormuz tensions weigh on global markets</div>
-  <div class="news-meta">13 Mar 2026 · Malay Mail — KLCI opened 9.07 pts lower at 1,701.94. Geopolitical risk from Strait of Hormuz pressuring Asian markets broadly.</div>
-</div>
-<div class="news-card">
-  <div class="news-title">KLCI fell to 1,699 on 13 Mar, down 0.71% — but up 12.35% year-on-year</div>
-  <div class="news-meta">Trading Economics — Index has declined 2.44% past month on global macro headwinds, but the 1-year picture remains strongly positive.</div>
-</div>
-<div class="news-card">
-  <div class="news-title">Bursa opens strong on 10 Mar amid Wall Street rebound and regional gains</div>
-  <div class="news-meta">10 Mar 2026 · BusinessToday.my — Positive lead from Wall Street and broader Asian markets lifted sentiment; market volatile week-on-week.</div>
-</div>
-<div class="news-card">
-  <div class="news-title">M-REITs projected to deliver 6.1% avg dividend yield in 2026 — Maybank IB</div>
-  <div class="news-meta">The Edge Malaysia — Healthy yield spread of 208–258 bps over risk-free rate. Easing rate outlook makes REITs attractive again.</div>
-</div>
+<!-- LATEST NEWS -->
+<div class="section-title">📰 Market News — This Week</div>
+<div class="news-card"><div class="news-dot"></div><div><div class="news-title">KLCI fell to 1,699 on 13 Mar — global headwinds, not Malaysia weakness</div><div class="news-meta">Trading Economics · Down 2.44% past month on Hormuz tensions & Wall St selloff. Up 12.35% YoY — fundamentals intact. Current dip = potential buying opportunity.</div></div></div>
+<div class="news-card"><div class="news-dot"></div><div><div class="news-title">Gamuda remains analysts' #1 top pick for 2026 — avg TP RM6.46, +40% upside</div><div class="news-meta">The Edge Malaysia (Jan 2026) · 101 analysts rated BUY, 0 SELL. One of the largest upsides among large-cap stocks on Bursa.</div></div></div>
+<div class="news-card"><div class="news-dot"></div><div><div class="news-title">Malaysia tech upcycle "intact" — semiconductor market heading to US$1 trillion in 2026</div><div class="news-meta">Kenanga Investment Bank / The Edge (Jan 2026) · AI demand structural, not cyclical. Logic & memory chips growing 30%+ YoY. Inari & Unisem top picks.</div></div></div>
+<div class="news-card"><div class="news-dot"></div><div><div class="news-title">KLCI 2026 target: 1,810–1,850 — 7% earnings growth expected, double 2025's pace</div><div class="news-meta">CGS International / Maybank IB / The Edge · Malaysia less exposed to US tariffs than ASEAN peers. Ringgit to strengthen as Fed-BNM rate spread narrows.</div></div></div>
+<div class="news-card"><div class="news-dot" style="background:#48bb78"></div><div><div class="news-title">M-REITs projected 6.1% avg dividend yield in 2026 — easing rate outlook boosts sector</div><div class="news-meta">Maybank Investment Bank Research · Healthy 208–258 bps spread over risk-free rate. REITs outperform FD by 2.5x.</div></div></div>
 
-<!-- Tips -->
-<div class="section-title">💡 CF's Investment Playbook</div>
-<div class="tips-grid">
-  <div class="tip-card">
-    <h4>🏦 Core Dividend Holdings</h4>
-    <p>CIMB and MAYBANK are rated Strong Buy with ~6% yields. Low risk, decades of consistent payouts. Good foundation for any portfolio. BIMB adds Islamic-compliant exposure.</p>
+<!-- STRATEGY TIPS -->
+<div class="section-title" style="margin-top:24px">💡 CF's Investment Strategy Guide</div>
+<div class="tips">
+  <div class="tip">
+    <h4>📐 Suggested Portfolio Split</h4>
+    <p><strong style="color:#48bb78">40% Blue Chip Dividend</strong> — Maybank, CIMB, RHB for steady 6% income<br/><strong style="color:#63b3ed">25% Growth</strong> — Gamuda, Inari for capital gains (30–40% upside)<br/><strong style="color:#b794f4">20% REITs</strong> — Sentral, Axis for quarterly passive income<br/><strong style="color:#f6c90e">15% Thematic</strong> — Tenaga, YTLPOWER for utilities upcycle play</p>
   </div>
-  <div class="tip-card">
-    <h4>🏢 REITs for Passive Income</h4>
-    <p>Sentral REIT (7.78%) leads the pack. Axis REIT pays quarterly. Maybank IB projects M-REITs averaging 6.1% in 2026 — much better than FD at 2.5%.</p>
+  <div class="tip">
+    <h4>📅 When to Buy — Use the Dip</h4>
+    <p>KLCI down 2.44% this month due to global noise (Hormuz, Wall St) — <strong style="color:#48bb78">not Malaysia fundamentals</strong>. Analysts still project KLCI at 1,810–1,850 by end 2026 (from current 1,699). This dip = potential 6–8% market upside just from mean reversion. Good time to accumulate quality names.</p>
   </div>
-  <div class="tip-card">
-    <h4>⚡ Higher Yield, Higher Risk</h4>
-    <p>BAT Malaysia (10.87%) and Allianz (8.72%) have Strong Buy ratings but sector-specific risks (sin stock regulations, insurance cycles). Consider as smaller positions only.</p>
+  <div class="tip">
+    <h4>⚠️ Risk Management Rules</h4>
+    <p>• Never put >15% in a single stock<br/>• Set a <strong style="color:#fc8181">stop loss at −10%</strong> from entry for growth stocks<br/>• Dividend stocks: hold through dips unless fundamentals change<br/>• Avoid yields >10% unless you understand why it's that high (often a trap)<br/>• Check ex-dividend dates before buying</p>
   </div>
-  <div class="tip-card">
-    <h4>📅 Buy the Dip?</h4>
-    <p>KLCI is down 2.44% this month due to global headwinds (Hormuz, Wall St jitters) — not Malaysia-specific weakness. Could be a good entry point for long-term dividend buys. Don't panic sell quality names.</p>
-  </div>
-  <div class="tip-card">
-    <h4>⚠️ Watch Out For</h4>
-    <p>Yields above 15–17% (e.g. Jasa Kita, Country View) often signal special/one-off dividends or distress. Check payout ratio and earnings trend. Avoid yield traps.</p>
-  </div>
-  <div class="tip-card">
-    <h4>💡 Sample RM50k Portfolio</h4>
-    <p>RM20k Maybank + RM10k CIMB + RM10k Sentral REIT + RM5k Axis REIT + RM5k Allianz = ~RM3,000/year income (~6% blended yield). Reinvest dividends to compound.</p>
+  <div class="tip">
+    <h4>🧮 RM50,000 Sample Portfolio</h4>
+    <p><strong style="color:#48bb78">RM20,000</strong> — MAYBANK + CIMB (dividend core)<br/><strong style="color:#63b3ed">RM12,500</strong> — GAMUDA (growth)<br/><strong style="color:#b794f4">RM10,000</strong> — SENTRAL REIT + AXREIT (income)<br/><strong style="color:#f6c90e">RM7,500</strong> — INARI + TENAGA (thematic)<br/>Expected blended yield: ~5.5–6% = <strong style="color:#48bb78">~RM2,750–3,000/year</strong></p>
   </div>
 </div>
 
-<!-- Resources -->
-<div class="section-title">🔗 Useful Resources</div>
-<div class="grid-2">
-  <div class="news-card">
-    <div class="news-title">📈 <a href="https://www.tradingview.com/markets/stocks-malaysia/market-movers-high-dividend/" target="_blank">TradingView — Live High Dividend Screener</a></div>
-    <div class="news-meta">Real-time dividend yield rankings for all Bursa-listed stocks</div>
-  </div>
-  <div class="news-card">
-    <div class="news-title">🏛️ <a href="https://www.bursamalaysia.com" target="_blank">Bursa Malaysia Official</a></div>
-    <div class="news-meta">Announcements, financial results, dividend declarations</div>
-  </div>
-  <div class="news-card">
-    <div class="news-title">📊 <a href="https://mreit.fifthperson.com/" target="_blank">M-REIT Data — Fifth Person</a></div>
-    <div class="news-meta">Live daily updates on all Malaysian REIT yields and distributions</div>
-  </div>
-  <div class="news-card">
-    <div class="news-title">📰 <a href="https://theedgemalaysia.com" target="_blank">The Edge Malaysia</a></div>
-    <div class="news-meta">Premium financial news and analyst research for Bursa</div>
-  </div>
+<!-- RESOURCES -->
+<div class="section-title">🔗 Quick Links</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px">
+  <a href="https://www.tradingview.com/markets/stocks-malaysia/market-movers-high-dividend/" target="_blank" style="background:#13182a;border:1px solid #1e2a3a;border-radius:8px;padding:10px 12px;display:block;font-size:0.72rem;color:#63b3ed">📈 TradingView Live Screener</a>
+  <a href="https://klse.i3investor.com" target="_blank" style="background:#13182a;border:1px solid #1e2a3a;border-radius:8px;padding:10px 12px;display:block;font-size:0.72rem;color:#63b3ed">💬 i3investor Community</a>
+  <a href="https://mreit.fifthperson.com/" target="_blank" style="background:#13182a;border:1px solid #1e2a3a;border-radius:8px;padding:10px 12px;display:block;font-size:0.72rem;color:#63b3ed">🏢 M-REIT Live Data</a>
+  <a href="https://theedgemalaysia.com" target="_blank" style="background:#13182a;border:1px solid #1e2a3a;border-radius:8px;padding:10px 12px;display:block;font-size:0.72rem;color:#63b3ed">📰 The Edge Malaysia</a>
 </div>
 
 <div class="footer">
-  Generated by Angel 🪽 · OpenClaw · 15 March 2026 10:12 AM MYT · Data: TradingView, Duitwise, The Edge, Malay Mail, Maybank IB Research · Not financial advice
+  Generated by Angel 🪽 · OpenClaw · 15 March 2026 11:50 AM MYT<br/>
+  Sources: The Edge Malaysia · CGS International · Maybank IB Research · Kenanga · TradingView · i3investor · Duitwise<br/>
+  <strong style="color:#fc8181">Not financial advice. Do your own research. You can lose money in stocks.</strong>
 </div>
 
 </body>
